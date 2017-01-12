@@ -1,2 +1,4 @@
-# cmps101
-UCSC CMPS 101 Programming Assignment
+Kameron Gill
+
+
+Programming Assignments for Tantalo's CS 101 class.
