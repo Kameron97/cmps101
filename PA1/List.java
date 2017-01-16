@@ -53,7 +53,7 @@ class List{
 	//Returns front element. pre:length()>0
 	int front(){
 		if(length<1){
-			throw new RuntimeException("List Error: front() called on empty list!);
+			throw new RuntimeException("List Error: front() called on empty list!");
 		}
 		return front.data;
 	}
@@ -61,7 +61,7 @@ class List{
 	//Retrusn back element. Pre: length() >0
 	int back(){
 		if(length<1){
-			throw new RuntimeException("List Error: back() called on empty list!);
+			throw new RuntimeException("List Error: back() called on empty list!");
 		}
 		return back.data;
 	}
@@ -88,7 +88,7 @@ class List{
 			N = N.next;
 			M = M.next;
 		}
-	return eq;
+		return eq;
 	}
 
 
@@ -104,3 +104,83 @@ class List{
 	//If List is non-empty, place the cursor  under the front element,
 	//otherwise does nothing
 	void moveFront(){
+		if(length != 0) {
+			cursor = front;
+			index = 0;
+		}
+	}
+
+	//If  List is non-empty, place the cursor under the back element,
+	//otherwise does nothing
+	void moveBack(){
+		if(length != 0){
+			cursor = back;
+			index = length -1;
+		}
+	}
+	
+	//If cursor is defined and not at front, moves cursor one step toward
+	//front of this list, if cursor is defined and at front, cursor becomes
+	//undefined, if cursor is undefined does nothing
+	void moveBackePrev(){
+		if(cursor != null && index != 0){
+			cursor = cursor.prev;
+			index--;
+		}
+		else if(cursor != null && index == 0){
+			cursor = null;
+			index = -1;
+		}
+	}
+
+	//if cursor is defined and not at back, moves cursor one step toward
+	//back of the list, if cursor is defind and at  back, cursor becomes
+	//undefined, if cursor is undefined does nothing
+	void moveNext(){
+		if(cursor != null && index != length-1){
+			cursor = cursor.next;
+			index++;
+		}
+		else if (cursor != null && index == length-1){
+			cursor = null;
+			index = -1;
+		}
+	}
+
+	//Insert new element into this List. if List is non-empty,
+	//insertion takes place before front element
+	void prepend(int data){
+		Node temp = new Node(data);
+		if(front == null){
+			back = temp;
+		}
+		else{
+			front.prev = temp;
+			temp.next = front;
+			front = temp;
+			index++;
+		}
+		length++;
+	}
+
+	//insert new element into this List. If list is non-empty,
+	//insertion takes place after back element
+	void append(int data){
+		Node temp = new Node(data);
+		if( front == null){
+			front = temp;
+		}
+		else{
+			back.next = temp;
+			temp.prev = back;
+			back = temp;
+		}
+		length++;
+	}
+
+	//Insert new element before cursor.
+	//Pre: length() >0, index() >= 0
+	void insertBefore(int data){
+
+
+
