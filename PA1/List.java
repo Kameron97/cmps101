@@ -111,7 +111,6 @@ public class List{
 	//Manipulation procedures
 
 	//Resets this List to its original empty state
-	 boolean isEmpty() { return length==0; }
 	void clear(){
 		front = back = cursor = null;
 		length = 0;
@@ -196,7 +195,9 @@ public class List{
 	// Inserts new element before cursor element in this List. Pre: length()>0, getIndex()>=0
 	void insertBefore(int data){
 		 Node node = new Node(data);
-		 if( this.isEmpty() ){front = back = node; }
+		 if(length ==0){
+			 throw new RuntimeException("List Error: insertBefore() called on empty list!");
+		 }
 		 else{
 				node.next = cursor;
 				if(cursor.prev != null){
@@ -215,9 +216,11 @@ public class List{
 	// List. Pre: length()>0, getIndex()>=0
 	void insertAfter(int data){
 		 Node node = new Node(data);
-		 if(this.isEmpty() ){
-				front = back = node;
-				index++;
+		 if(length < 0){
+			 throw new RuntimeException("List Error: deleteFront() called on an empty List");
+
+				//front = back = node;
+				//index++;
 		 }else{
 				(cursor.next).prev = node;
 				node.next = cursor.next;
