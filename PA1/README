@@ -1,0 +1,20 @@
+Kameron GIll
+1476833
+CMPS 101
+PA1
+
+Included:
+
+List.java --- An ADT written by me. This is a linked list that follow the
+	      criteria given to us in the assignment.
+
+ListClient.java -- Given to us by the Professor. This is used to test List.java
+		   and makes sure it works.
+
+Lex.java ---   	Written by me. Uses functions Made in List.java in order to make
+		a linked list AND also sort words in a file alphabetically
+
+README ---     Description of assignment
+
+Makefile --   Given to us by the professor. Compiles the work.
+
