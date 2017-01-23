@@ -139,7 +139,7 @@ public class List{
  void movePrev() {
  	 if(cursor != null && index != 0) {
  			cursor = cursor.prev;
- 			--index;
+ 			index--;
  	 }
  	 else if(cursor != null && index == 0) {
  			cursor = null;
@@ -153,7 +153,7 @@ public class List{
  void moveNext() {
  	 if(cursor != null && index != length - 1) {
  			cursor = cursor.next;
- 			++index;
+ 		index++;
  	 }
  	 else if(cursor != null && index == length - 1) {
  			cursor = null;
@@ -202,7 +202,7 @@ public class List{
 				node.next = cursor;
 				if(cursor.prev != null){
 				node.prev = cursor.prev;
-				(cursor.prev).next = node;
+				cursor.prev.next = node;
 				}
 				cursor.prev = node;
 				if (node.prev == null)
@@ -214,23 +214,20 @@ public class List{
 
 	// Inserts new element after cursor element in this
 	// List. Pre: length()>0, getIndex()>=0
-	void insertAfter(int data){
-		 Node node = new Node(data);
-		 if(length < 0){
-			 throw new RuntimeException("List Error: deleteFront() called on an empty List");
-
-				//front = back = node;
-				//index++;
-		 }else{
-				(cursor.next).prev = node;
-				node.next = cursor.next;
-				node.prev = cursor;
-				cursor.next = node;
-				if(node.next == null)
-					back = node;
-
-		 }
-		 length++;
+	void insertAfter(int data) {
+			if(length() < 0 && index < 0)
+					throw new RuntimeException("List error: insertAfter() called on empty List");
+			if(cursor == back) {
+			append(data);
+		}
+			else {
+					Node temp = new Node(data);
+					cursor.next.prev = temp;
+					temp.next = cursor.next;
+					temp.prev = cursor;
+					cursor.next = temp;
+					length++;
+			}
 	}
 
 	// Deletes the front element.
@@ -244,7 +241,7 @@ public class List{
  		}
  		front = front.next;
  		front.prev = null;
- 		--length;
+ 		length--;
   }
 
   // Deletes the back element.
@@ -258,7 +255,7 @@ public class List{
  		}
  		back = back.prev;
  		back.next = null;
- 		--length;
+ 		length--;
   }
 
   // Deletes cursor element, making cursor undefined.
@@ -277,7 +274,7 @@ public class List{
  			 cursor.next.prev = cursor.prev;
  			 cursor = null;
  			 index = -1;
- 			 --length;
+ 			 length--;
  		}
   }
 
@@ -285,13 +282,12 @@ public class List{
 	//Other methods
 
 	public String toString() {
-		 Node tmp = front;
-		 String print = new String();
-		 while(tmp != null) {
-				print = print + String.valueOf(tmp.data) + " ";
-				tmp = tmp.next;
-		 }
-		 return print;
+		String str = "";
+
+		for(Node temp = front; temp != null; temp = temp.next){
+			str+= temp.toString() + " ";
+		}
+		return str;
 	}
 
 
