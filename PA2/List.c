@@ -292,4 +292,7 @@ void append(int append){
 void insertBefore(List L, int data){
 	Node temp = new Node(data);
 
-
+	if( isEmpty(L)){
+		printf("List error: insertBefore() called on empty List reference\n");
+		exit(1);
+	}
