@@ -189,6 +189,7 @@ void clear(List L){
 }
 
 //moveFront()
+//will move cursor to the front of the List
 //Pre: !isEmpty();
 void moveFront(List L){
 	if(L == NULL){
@@ -196,10 +197,99 @@ void moveFront(List L){
 		exit(1);
 	}
 	if( isEmpty(L)){
-		printf("List error: calling moveFront() on NULL List reference\n");
+		printf("List error: calling moveFront() on empty List reference\n");
 		exit(1);
 	}
-	
+
 	L->cursor = L->front;
 	L-> index = 0;
 }
+
+//moveBack()
+//will move cursor to the back of the List
+//pre: !isEmpty();
+void moveBack(List L){
+	if(L == NULL){
+		printf("List error: calling moveBack() on NULL list reference\n");
+		exit(1);
+	}
+	if( isEmpty(L)){
+		printf("List error: calling moveBack() on empty List reference \n");
+		exit(1);
+	}
+	L->cursor = L->back;
+	L->index = L->length -1;
+}
+
+//movePrev()
+//Move cursor one spot toward begginging of List
+//if cursor is at front and called, becomes undefined
+//undefined, does nothing
+void movePrev(List L){
+	if(L->cursor != NULL && L->index != 0){
+		L->cursor = L->cursor->prev;
+		L->index--;
+	}
+	else if(L->cursor != NULL && L->index == 0){
+		L->cursor = NULL;
+		L->index = -1;
+	}
+}
+
+//moveNext()
+//Move cursor one spot back of the List
+//if cursor is define and at back, becomes undefined
+//if undefined does nothing
+void moveNext(List L){
+	if(L->cursor != NULL && L->index != L->index -1){
+		L->cursor = L->cursor->next;
+		L->index++;
+	}
+	else if (L->cursor != NULL && L->index == L->length -1){
+		L->cursor = NULL;
+		L->index = -1;
+	}
+}
+
+//prepend()
+//insert new element into this List. If List in non-empty.
+//insertion takes place before fornt elemnt
+void prepend(int data){
+	Node temp = new Node(data);
+
+	if(L->front == NULL){
+		L->front = L->back = temp;
+	}
+	else{
+		L->front->prev = temp;
+		temp->next = L->front;
+		L->front = temp;
+		L->index++;
+	}
+	L->length++;
+}
+
+//append()
+//insert new elment into this List. If list in no-empty,
+//insertion takes place after back element
+void append(int append){
+	Node temp = new Node(data);
+
+	if(L->front == NULL){
+		L->front = L->back = temp;
+	}
+	else{
+		L->back->next = temp;
+		temp->prev = L->back;
+		L->back = temp;
+	}
+	L->length++;
+}
+
+//insertBefore()
+//Inserts new element before cursor element in this List.
+//Pre: length()>0, getIndex() >= 0
+void insertBefore(List L, int data){
+	Node temp = new Node(data);
+
+
