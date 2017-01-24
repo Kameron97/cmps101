@@ -66,14 +66,17 @@ List newList(void){
 
 //freeList()
 //frees all heap memory associated with List *pQ and sets *pQ to NULL
-void freeList(List* pQ){
-	if(pQ != NULL && *pQ != NULL){
-		while(!isEmpty(*pQ)){
-			Dequeue(*pQ);
-		}
-		free(*pQ);
-		*pQ = NULL;
-	}
+void freeList(List* pL) {
+   if(pL != NULL && *pL != NULL) {
+      Node tmp = (*pL)->front;
+      while(tmp != NULL) {
+         Node cur = tmp;
+         tmp = tmp->next;
+         free(cur);
+      }
+      free(*pL);
+      *pL = NULL;
+   }
 }
 
 //Access functions ==========================================
@@ -254,8 +257,8 @@ void moveNext(List L){
 //prepend()
 //insert new element into this List. If List in non-empty.
 //insertion takes place before fornt elemnt
-void prepend(int data){
-	Node temp = new Node(data);
+void prepend(List L,int data){
+	Node temp = newNode(data);
 
 	if(L->front == NULL){
 		L->front = L->back = temp;
@@ -272,8 +275,8 @@ void prepend(int data){
 //append()
 //insert new elment into this List. If list in no-empty,
 //insertion takes place after back element
-void append(int append){
-	Node temp = new Node(data);
+void append(List L, int data){
+	Node temp = newNode(data);
 
 	if(L->front == NULL){
 		L->front = L->back = temp;
@@ -288,11 +291,145 @@ void append(int append){
 
 //insertBefore()
 //Inserts new element before cursor element in this List.
-//Pre: length()>0, getIndex() >= 0
+//Pre: length()>0, index() >= 0
 void insertBefore(List L, int data){
-	Node temp = new Node(data);
+	Node temp = newNode(data);
 
 	if( isEmpty(L)){
 		printf("List error: insertBefore() called on empty List reference\n");
 		exit(1);
+	}else {
+		temp->next = L->cursor;
+
+		if(L->cursor->prev != NULL){
+			temp->prev = L->cursor->prev;
+			L->cursor->prev->next = temp;
+		}
+		L->cursor->prev = temp;
+		if(temp->prev == NULL){
+			L->front = temp;
+		}
+		L->index++;
+		L->length++;
 	}
+}
+
+//insertAfter()
+//inserts new elemeemt after cursor element in this List.
+//Pre: length()>0, index>=0
+void insertAfter(List L, int data){
+	Node temp = newNode(data);
+
+	if( isEmpty(L)){
+		printf("List Error: insertAfter() called on empty List Reference\n");
+		exit(1);
+
+	}else {
+		L->cursor->next->prev = temp;
+		temp->next = L->cursor->next;
+		temp->prev = L->cursor;
+		L->cursor->next = temp;
+		L->length++;
+	}
+}
+
+//deleteFront(){
+//pre: length() >0
+void deleteFront(List L){
+	if( isEmpty(L)){
+		printf("List Error: deleteFront called on empty List reference \n");
+		exit(1);
+	}
+
+	if(L->cursor == L->front){
+		L->cursor = NULL;
+		L->index = -1;
+	}
+	L->front = L->front->next;
+	L->front->prev = NULL;
+	L->length--;
+//	freeNode(&
+}
+void deleteBack(List L){
+   Node N = NULL;
+
+   if( L==NULL ){
+      printf("List Error: calling DeList() on NULL List reference\n");
+      exit(1);
+   }
+   if( isEmpty(L) ){
+      printf("List Error: calling DeList on an empty List\n");
+      exit(1);
+   }
+   N = L->back;
+   if( L->length > 1 ) {L->back = L->back->prev; }
+   else {
+      L->front = L->back = NULL;
+      //freeNode(L->front);
+   }
+   L->length--;
+   N = NULL;
+   freeNode(&N);
+}
+
+//delete
+//delete element at cursor
+void delete(List L){
+   Node N = NULL;
+   if( L==NULL ){
+      printf("List Error: calling DeList() on NULL List reference\n");
+      exit(1);
+   }
+   if( isEmpty(L) ){
+      printf("List Error: calling DeList on an empty List\n");
+      exit(1);
+   }else if(index(L) == -1){
+      printf("List Error: calling delete on a null cursor");
+      exit(1);
+   }else if(index(L) >= 0){
+      if(L->cursor->prev == NULL){
+         L->front = L->cursor->next;
+      }
+      else if(L->cursor->next == NULL){
+         L->back = L->cursor->prev;
+      }
+      N = L->cursor;
+      L->cursor->prev->next = L->cursor->next;
+      L->cursor->next->prev = L->cursor->prev;
+      L->cursor = NULL;
+      L->length--;
+      L->index = -1;
+      freeNode(&N);
+   }
+
+
+}
+
+// Other Functions ------------------------------------------------------------
+
+// printList()
+// Prints data elements in L on a single line to stdout.
+void printList(FILE* out, List L){
+   Node N = NULL;
+
+   if( L==NULL ){
+      printf("List Error: calling printList() on NULL List reference\n");
+      exit(1);
+   }
+   for(N = L->front; N != NULL; N = N->next){
+      printf("%d ", N->data);
+   }
+   printf("\n");
+}
+
+   // copy(): returns a new List identical to this one.
+   List copyList(List L){
+      List A = newList();
+      Node N = L->front;
+
+      while( N!=NULL ){
+         append(A, N->data);
+         N = N->next;
+      }
+      return A;
+   }
