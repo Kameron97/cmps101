@@ -197,7 +197,7 @@ void moveFront(List L) {
 	if(L->length > 0){
 		L->cursor = L->front;
 		L->index = 0;
-}
+	}
 }
 
 // If List is non-empty, places the cursor under the back
@@ -314,7 +314,7 @@ void insertAfter(List L, int data){
 		temp->next = L->cursor->next;
 		temp->prev = L->cursor;
 		L->cursor->next = temp;
-	L->length++;
+		L->length++;
 	}
 }
 
@@ -322,24 +322,24 @@ void insertAfter(List L, int data){
 //pre: length() >0
 //based off of Queue.c method Dequeue
 void deleteFront(List L){
-   Node N = NULL;
+	Node N = NULL;
 
-   if( L==NULL ){
-      printf("Queue Error: calling deleteFront() on NULL Queue reference\n");
-      exit(1);
-   }
-   if( isEmpty(L) ){
-      printf("Queue Error: calling deleteFront() on an empty Queue\n");
-      exit(1);
-   }
-   N = L->front;
-   if( length(L)>1 ) {
-      L->front = L->front->next;
-   }else{
-      L->front = L->back = NULL;
-   }
-   L->length--;
-   freeNode(&N);
+	if( L==NULL ){
+		printf("Queue Error: calling deleteFront() on NULL Queue reference\n");
+		exit(1);
+	}
+	if( isEmpty(L) ){
+		printf("Queue Error: calling deleteFront() on an empty Queue\n");
+		exit(1);
+	}
+	N = L->front;
+	if( length(L)>1 ) {
+		L->front = L->front->next;
+	}else{
+		L->front = L->back = NULL;
+	}
+	L->length--;
+	freeNode(&N);
 }
 
 //based off of Queue.c method Dequeue
