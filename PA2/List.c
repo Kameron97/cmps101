@@ -66,31 +66,28 @@ List newList(void){
 
 //freeList()
 //frees all heap memory associated with List *pQ and sets *pQ to NULL
-void freeList(List* pL) {
-   if(pL != NULL && *pL != NULL) {
-      Node tmp = (*pL)->front;
-      while(tmp != NULL) {
-         Node cur = tmp;
-         tmp = tmp->next;
-         free(cur);
-      }
-      free(*pL);
-      *pL = NULL;
-   }
-}
+// freeList()
+// Frees all heap memory associated with List *pQ, and sets *pQ to NULL.S
 
-//Access functions ==========================================
-
-
-//isEmpty()
-//checks to see if List is empty
 int isEmpty(List L){
-	if(L == NULL){
-		printf("List Error: Calling isEmpty() on NULL QUEUE reference\n");
+	if( L == NULL){
+		printf("List error: isEmpty() called on NULL list reference\n");
 		exit(1);
 	}
 	return(L->length==0);
 }
+
+void freeList(List* pL){
+	if(pL !=NULL && *pL !=NULL) {
+		while( !isEmpty(*pL) ) {
+			deleteFront(*pL);
+		}
+		free(*pL);
+		*pL = NULL;
+	}
+}
+//Access functions ==========================================
+
 
 //length()
 //Retursn the Length of L
@@ -120,10 +117,11 @@ int front(List L){
 		printf("List Error: calling front() on NULL List Reference\n");
 		exit(1);
 	}
-	if(isEmpty(L)){
-		printf("List Error: calling front() on empty List reference\n");
+	if(isEmpty(L) ){
+		printf("List Error: calling front() on an empty List\n");
 		exit(1);
 	}
+
 	return(L->front->data);
 }
 
@@ -131,12 +129,13 @@ int front(List L){
 //returns the value at the back of L
 //Pre: !isEmpty(L);
 int back(List L){
-	if( L == NULL){
-		printf("List Error: calling back on NULL List reference\n");
+
+	if(L == NULL){
+		printf("List Error: calling back on empty List reference\n");
 		exit(1);
 	}
-	if(isEmpty(L)){
-		printf("List Error: calling back on empty List reference\n");
+	if( isEmpty(L) ){
+		printf("List Error: calling back() on an empty List\n");
 		exit(1);
 	}
 	return(L->back->data);
@@ -185,70 +184,54 @@ int equals(List A, List B){
 
 //clear()
 //emptys entire List to make it empty
-void clear(List L){
+void clear(List L) {
 	L->front = L->back = L->cursor = NULL;
 	L->length = 0;
-	L->index = 0;
+	L->index = -1;
+
 }
 
-//moveFront()
-//will move cursor to the front of the List
-//Pre: !isEmpty();
-void moveFront(List L){
-	if(L == NULL){
-		printf("List error: calling moveFront() on NULL list reference\n");
-		exit(1);
-	}
-	if( isEmpty(L)){
-		printf("List error: calling moveFront() on empty List reference\n");
-		exit(1);
-	}
-
-	L->cursor = L->front;
-	L-> index = 0;
+// If List is non-empty, places the cursor under the front
+// element, otherwise does nothing.
+void moveFront(List L) {
+	if(L->length > 0){
+		L->cursor = L->front;
+		L->index = 0;
+}
 }
 
-//moveBack()
-//will move cursor to the back of the List
-//pre: !isEmpty();
+// If List is non-empty, places the cursor under the back
+// element, otherwise does nothing.
 void moveBack(List L){
-	if(L == NULL){
-		printf("List error: calling moveBack() on NULL list reference\n");
-		exit(1);
+	if(L->length > 0) {
+		L->cursor = L->back;
+		L->index = L->length - 1;
 	}
-	if( isEmpty(L)){
-		printf("List error: calling moveBack() on empty List reference \n");
-		exit(1);
-	}
-	L->cursor = L->back;
-	L->index = L->length -1;
 }
 
-//movePrev()
-//Move cursor one spot toward begginging of List
-//if cursor is at front and called, becomes undefined
-//undefined, does nothing
-void movePrev(List L){
-	if(L->cursor != NULL && L->index != 0){
+// If cursor is defined and not at front, moves cursor one step
+// toward the front of this List, if cursor is defined and at front,
+// cursor becomes undefined, if cursor is undefined does nothing.
+void movePrev(List L) {
+	if(L->cursor != NULL && L->index != 0) {
 		L->cursor = L->cursor->prev;
 		L->index--;
 	}
-	else if(L->cursor != NULL && L->index == 0){
+	else if(L->cursor != NULL && L->index == 0) {
 		L->cursor = NULL;
 		L->index = -1;
 	}
 }
 
-//moveNext()
-//Move cursor one spot back of the List
-//if cursor is define and at back, becomes undefined
-//if undefined does nothing
-void moveNext(List L){
-	if(L->cursor != NULL && L->index != L->index -1){
+// If cursor is defined and not at back, moves cursor one step
+// toward the back of this List, if cursor is defined and at back,
+// cursor becomes undefined, if cursor is undefined does nothing.
+void moveNext(List L) {
+	if(L->cursor != NULL && L->index != L->length - 1) {
 		L->cursor = L->cursor->next;
 		L->index++;
 	}
-	else if (L->cursor != NULL && L->index == L->length -1){
+	else if(L->cursor != NULL && L->index == L->length - 1) {
 		L->cursor = NULL;
 		L->index = -1;
 	}
@@ -272,16 +255,16 @@ void prepend(List L,int data){
 	L->length++;
 }
 
+
 //append()
 //insert new elment into this List. If list in no-empty,
 //insertion takes place after back element
 void append(List L, int data){
 	Node temp = newNode(data);
-
 	if(L->front == NULL){
 		L->front = L->back = temp;
 	}
-	else{
+	else {
 		L->back->next = temp;
 		temp->prev = L->back;
 		L->back = temp;
@@ -295,7 +278,7 @@ void append(List L, int data){
 void insertBefore(List L, int data){
 	Node temp = newNode(data);
 
-	if( isEmpty(L)){
+	if( L == NULL ){
 		printf("List error: insertBefore() called on empty List reference\n");
 		exit(1);
 	}else {
@@ -318,118 +301,125 @@ void insertBefore(List L, int data){
 //inserts new elemeemt after cursor element in this List.
 //Pre: length()>0, index>=0
 void insertAfter(List L, int data){
-	Node temp = newNode(data);
-
-	if( isEmpty(L)){
-		printf("List Error: insertAfter() called on empty List Reference\n");
+	if( L == NULL ){
+		printf("List Error: calling EnList() on NULL List reference\n");
 		exit(1);
-
-	}else {
-		L->cursor->next->prev = temp;
+	}
+	if(L->cursor == L->back){
+		append(L,data);
+	}
+	else{
+		Node temp = newNode(data);
+		L->cursor->prev = temp;
 		temp->next = L->cursor->next;
 		temp->prev = L->cursor;
 		L->cursor->next = temp;
-		L->length++;
+	L->length++;
 	}
 }
 
 //deleteFront(){
 //pre: length() >0
+//based off of Queue.c method Dequeue
 void deleteFront(List L){
-	if( isEmpty(L)){
-		printf("List Error: deleteFront called on empty List reference \n");
-		exit(1);
-	}
-
-	if(L->cursor == L->front){
-		L->cursor = NULL;
-		L->index = -1;
-	}
-	L->front = L->front->next;
-	L->front->prev = NULL;
-	L->length--;
-//	freeNode(&
-}
-void deleteBack(List L){
    Node N = NULL;
 
    if( L==NULL ){
-      printf("List Error: calling DeList() on NULL List reference\n");
+      printf("Queue Error: calling deleteFront() on NULL Queue reference\n");
       exit(1);
    }
    if( isEmpty(L) ){
-      printf("List Error: calling DeList on an empty List\n");
+      printf("Queue Error: calling deleteFront() on an empty Queue\n");
       exit(1);
    }
-   N = L->back;
-   if( L->length > 1 ) {L->back = L->back->prev; }
-   else {
+   N = L->front;
+   if( length(L)>1 ) {
+      L->front = L->front->next;
+   }else{
       L->front = L->back = NULL;
-      //freeNode(L->front);
    }
    L->length--;
-   N = NULL;
    freeNode(&N);
 }
 
+//based off of Queue.c method Dequeue
+void deleteBack(List L) {
+	Node N = NULL;
+	if(L == NULL) {
+		printf("List Error: deleteBack() called on NULL List reference\n");
+		exit(1);
+	}
+	if(isEmpty(L)) {
+		printf("List Error: deleteBack() called on an empty List\n");
+		exit(1);
+	}
+
+	N= L->back;
+	if(length(L)>1){
+		L->back = L->back->prev;
+
+	}
+	else{
+		L->back = L->front = NULL;
+	}
+	L->length--;
+	freeNode(&N);
+}
+
+
+
+
 //delete
 //delete element at cursor
-void delete(List L){
-   Node N = NULL;
-   if( L==NULL ){
-      printf("List Error: calling DeList() on NULL List reference\n");
-      exit(1);
-   }
-   if( isEmpty(L) ){
-      printf("List Error: calling DeList on an empty List\n");
-      exit(1);
-   }else if(index(L) == -1){
-      printf("List Error: calling delete on a null cursor");
-      exit(1);
-   }else if(index(L) >= 0){
-      if(L->cursor->prev == NULL){
-         L->front = L->cursor->next;
-      }
-      else if(L->cursor->next == NULL){
-         L->back = L->cursor->prev;
-      }
-      N = L->cursor;
-      L->cursor->prev->next = L->cursor->next;
-      L->cursor->next->prev = L->cursor->prev;
-      L->cursor = NULL;
-      L->length--;
-      L->index = -1;
-      freeNode(&N);
-   }
-
-
+void delete(List L) {
+	if(L == NULL) {
+		printf("List Error: delete() called on NULL List reference\n");
+		exit(1);
+	}
+	if(L->length < 1) {
+		printf("List Error: delete() called with an undefined index on List\n");
+		exit(1);
+	}
+	if(L->index < 0) {
+		printf("List Error: delete() called on empty List");
+		exit(1);
+	}
+	if(L->cursor == L->back) {
+		deleteBack(L);
+	} else if(L->cursor == L->front) {
+		deleteFront(L);
+	} else {
+		Node tmp = L->cursor;
+		L->cursor->prev->next = L->cursor->next;
+		L->cursor->next->prev = L->cursor->prev;
+		freeNode(&tmp);
+		L->cursor = NULL;
+		L->index = -1;
+		L->length--;
+	}
 }
 
 // Other Functions ------------------------------------------------------------
 
 // printList()
 // Prints data elements in L on a single line to stdout.
-void printList(FILE* out, List L){
-   Node N = NULL;
-
-   if( L==NULL ){
-      printf("List Error: calling printList() on NULL List reference\n");
-      exit(1);
-   }
-   for(N = L->front; N != NULL; N = N->next){
-      printf("%d ", N->data);
-   }
-   printf("\n");
+void printList(FILE* out, List L) {
+	Node temp = L->front;
+	while(temp != NULL) {
+		printf("%d ", temp->data);
+		temp = temp->next;
+	}
 }
 
-   // copy(): returns a new List identical to this one.
-   List copyList(List L){
-      List A = newList();
-      Node N = L->front;
-
-      while( N!=NULL ){
-         append(A, N->data);
-         N = N->next;
-      }
-      return A;
-   }
+// Returns a new List representing the same integer sequence as this
+// List. The curor in the new list is undefined, regardless of the
+// state of the cursor in this List. This List is unchanged.
+List copyList(List L) {
+	List c = newList();
+	Node temp = L->front;
+	while(temp != NULL) {
+		append(c, temp->data);
+		temp = temp->next;
+	}
+	return c;
+}
