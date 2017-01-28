@@ -57,17 +57,12 @@ void freeNode(Node* pN){
 List newList(void){
 	List L;
 	L = malloc(sizeof(ListObj));
-	L->front =L->back = NULL;
-	L->cursor = NULL;
+	L->front =L->back = L->cursor = NULL;
 	L->index = -1;
 	L->length = 0;
 	return(L);
 }
 
-//freeList()
-//frees all heap memory associated with List *pQ and sets *pQ to NULL
-// freeList()
-// Frees all heap memory associated with List *pQ, and sets *pQ to NULL.S
 
 int isEmpty(List L){
 	if( L == NULL){
