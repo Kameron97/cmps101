@@ -7,7 +7,7 @@
 
 public class Matrix{
 	private class Entry{
-		
+
 		int column;
 		double value;
 
@@ -16,7 +16,7 @@ public class Matrix{
 			this.value = value;
 		}
 
-	
+
 		//toString method
 		public String toString(){
 			return "("+ column+", "+value+")";
@@ -41,9 +41,9 @@ public class Matrix{
 		}
 	}
 
-	
+
 	//Access functions
-	
+
 	//returns n, the number of rows and column of this Matrix
 	int getSize(){
 		return size;
@@ -66,7 +66,7 @@ public class Matrix{
 				}
 			}
 		}
-		return true
+		return true;
 	}
 
 	///Manipulation procedures
@@ -81,4 +81,9 @@ public class Matrix{
 
 	//returns a new Matrix having the same entries as this Matrix
 	Matrix copy(){
+		Matrix ret = new Matrix(size);
+
+		for(int i = 0; i<size; i++){
+			M.row[i]
+
 
