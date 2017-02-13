@@ -3,7 +3,7 @@
 //  A test client for the Matrix ADT
 //-----------------------------------------------------------------------------
 
-public class MatrixClient{
+public class MatrixTest{
    public static void main(String[] args){
       int i, j, n=100000;
       Matrix A = new Matrix(n);
