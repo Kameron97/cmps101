@@ -33,6 +33,7 @@ public class MatrixClient{
       System.out.println(D.getNNZ());
       System.out.println(D);
 
+
       Matrix E = A.sub(A);
       System.out.println(E.getNNZ());
       System.out.println(E);
@@ -49,6 +50,7 @@ public class MatrixClient{
       System.out.println(H.getNNZ());
       System.out.println(H);
       System.out.println(A.equals(H));
+
       System.out.println(A.equals(B));
       System.out.println(A.equals(A));
 

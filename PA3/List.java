@@ -27,15 +27,7 @@ public class List{
 		}
 
 		// Returns true if two Nodes data properties are equal.
-		public boolean equals(Object x) {
-			boolean eq = false;
-			Node that;
-			if(x instanceof Node) {
-				that = (Node) x;
-				eq = (this.data == that.data);
-			}
-			return eq;
-		}
+		
 	}
 
 
@@ -75,6 +67,10 @@ public class List{
 		return front.data;
 	}
 
+	boolean isEmpty(){
+		return length==0;
+	}
+
 	//Retrusn back element. Pre: length() >0
 	Object back(){
 		if(length<1){
@@ -93,21 +89,22 @@ public class List{
 
 	//Returns true if this List and L are the same integer
 	//sequence. The cursor is ignored in both lists.
-	boolean equals(List L) {
-		if(L.length() != length) {
-			return false;
-		}
-		Node cfront = L.front;
-		Node tmp = front;
-		while(cfront.next != null && tmp.next != null) {
-			if(!cfront.equals(tmp))
-				return false;
-			cfront = cfront.next;
-			tmp = tmp.next;
-		}
-		return true;
-	}
+	boolean equals(List L){
+		 boolean flag  = true;
+		 Node N = this.front;
+		 Node M = L.front;
 
+		 if( this.length==L.length ){
+				while( flag && N!=null){
+					 flag = (N.data==M.data);
+					 N = N.next;
+					 M = M.next;
+				}
+				return flag;
+		 }else{
+				return false;
+		 }
+	}
 
 	//Manipulation procedures
 

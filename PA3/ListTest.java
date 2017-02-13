@@ -1,4 +1,8 @@
+//kameron gill
+//kgill2@Ucsc.edu
+//ListTest.java
 
+//based off of ListClient.java from PA1
 public class ListTest {
    public static void main(String[] args) {
       List A = new List();
