@@ -68,16 +68,19 @@ public class Matrix {
 
 	//checks to see if two amtrixs are the same.
 	public boolean equals(Object x){
-		boolean equal = false;
-		int i = 1;
-		if(getSize() == ((Matrix) x).getSize()) {
-			equal = true;
-			while(i < this.getSize() && equal ) {
-				equal = row[i].equals(((Matrix)x).row[i]);
-				i++;
+		Matrix that;
+
+		if(x instanceof Matrix){
+			that = (Matrix)x;
+			if(getSize() != that.getSize()){
+				return false;
+			}
+			for(int i =1; i<=getSize(); i++){
+				if(!(row[i].equals(that.row[i])))
+					return false;
 			}
 		}
-		return equal;
+		return true;
 	}
 	///Manipulation procedures
 
@@ -275,12 +278,12 @@ public class Matrix {
 			throw new RuntimeException("Matrix Error: Matrices must be the same size");
 		}
 
-	      //add the negative
-	      Matrix A = new Matrix(getSize());
-	      M = (M.scalarMult(-1));
-	      A = (this.add(M));
-	      return A;
-	   }
+		//add the negative
+		Matrix A = new Matrix(getSize());
+		M = (M.scalarMult(-1));
+		A = (this.add(M));
+		return A;
+	}
 	//returns a new Matrix that is the transpose of this Matrix
 	Matrix transpose(){
 		Matrix temp = new Matrix(getSize());
