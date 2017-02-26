@@ -401,7 +401,7 @@ void delete(List L) {
 void printList(FILE* out, List L) {
 	Node temp = L->front;
 	while(temp != NULL) {
-		printf("%d ", temp->data);
+		fprintf(temp->data);
 		temp = temp->next;
 	}
 }
