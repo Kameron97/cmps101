@@ -293,24 +293,30 @@ void insertBefore(List L, int data){
 //insertAfter()
 //inserts new elemeemt after cursor element in this List.
 //Pre: length()>0, index>=0
-void insertAfter(List L, int data){
-   Node N = newNode(data);
-   if( L==NULL ){
-      printf("List Error: calling EnList() on NULL List reference\n");
-      exit(1);
-   }
-   if( isEmpty(L) ){
-      L->front = L->back = N;
-      L->index++;
-   }else{
-      L->cursor->next->prev = N;
-      N->next = L->cursor->next;
-      N->prev = L->cursor;
-      L->cursor->next = N;
-      if(N->next == NULL)
-         L->back = N;
-   }
-   L->length++;
+void insertAfter(List L, int data) {
+	if (L == NULL) {
+		printf("List Error: insertAfter() called on NULL List reference\n");
+		exit (1);
+	} if (L->length <= 0) {
+		printf("List Error: insertAfter() called on empty List\n");
+		exit (1);
+	} if (L->cursor < 0) {
+		printf("List Error: insertAfter() called on list w/ undefined cursor\n");
+		exit (1);
+	} else if (L->cursor == L->back) {
+		append(L, data);
+	} else {
+		// Link the new node
+		Node N = newNode(data);
+		N->prev = L->cursor;
+		N->next = L->cursor->next;
+		// Link the previous node
+		L->cursor->next->prev = N;
+		// Link the next node
+		L->cursor->next = N;
+		// Update the length
+		L->length++;
+	}
 }
 
 //deleteFront(){
