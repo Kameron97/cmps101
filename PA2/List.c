@@ -320,78 +320,59 @@ void insertAfter(List L, int data) {
 }
 
 void deleteFront(List L) {
-	if (L == NULL) {
-		printf("List Error: deleteFront() called on NULL List reference\n");
-		exit (1);
-	} if (L->length <= 0) {
-		printf("List Error: deleteFront() called on empty List\n");
-		exit (1);
-	} else  if (L->length == 1) {
-		Node temp = L->front;
-		L->front = NULL;
-		freeNode(&temp);
-	} else {
-		Node temp = L->front;
-		Node a = L->front->next;
-		a->prev = NULL;
-		L->front = a;
-		if (L->index != -1) L->index--;
-		if (L->cursor == temp) moveFront(L);
-		freeNode(&temp);
-	} L->length--;
+    if(L == NULL) {
+        printf("List Error: calling deleteFront() on NULL List reference\n");
+        exit(1);
+    }
+    if(L->length == 0) {
+        printf("List Error: calling deleteFront() on empty List\n");
+        exit(1);
+    }
+    Node N = L->front->next;
+    if(L->cursor == L->front) L->cursor = NULL;
+    freeNode(&(L->front));
+    L->front = N;
+    if(N != NULL) N->prev = NULL;
+    L->length--;
+    if(L->cursor == NULL) L->index = -1;
 }
 
-// deleteBack()
-// Removes the element at the back of the list
 void deleteBack(List L) {
-	if (L == NULL) {
-		printf("List Error: deleteBack() called on NULL List reference\n");
-		exit (1);
-	} if (L->length <= 0) {
-		printf("List Error: deleteBack() called on empty List\n");
-		exit (1);
-	} else  if (L->length == 1) {
-		Node temp = L->back;
-		L->back = NULL;
-		freeNode(&temp);
-	} else {
-		Node temp = L->back;
-		Node a = L->back->prev;
-		a->next = NULL;
-		L->back = a;
-		if (L->cursor == temp) moveFront(L);
-		freeNode(&temp);
-	} L->length--;
+    if(L == NULL) {
+        printf("List Error: calling deleteBack() on NULL List reference\n");
+        exit(1);
+    }
+    if(L->length == 0) {
+        printf("List Error: calling deleteBack() on empty List\n");
+        exit(1);
+    }
+    Node N = L->back->prev;
+    if(L->cursor == L->back) L->cursor = NULL;
+    freeNode(&(L->back));
+    L->back = N;
+    if(N != NULL) N->next = NULL;
+    L->length--;
+    if(L->cursor == NULL) L->index = -1;
 }
 
-// delete()
-// Removes the element pointed at by the cursor
-// Pre: length()>0, getIndex()>=0
 void delete(List L) {
-	if (L == NULL) {
-		printf("List Error: delete() called on NULL List reference\n");
-		exit (1);
-	} if (L->length <= 0) {
-		printf("List Error: delete() called on empty List\n");
-		exit (1);
-	} if (L->index < 0) {
-		printf("List Error: delete() called on list w/ undefined cursor\n");
-		exit (1);
-	} else if (L->cursor == L->back) {
-		deleteBack(L);
-	} else if (L->cursor == L->front) {
-		deleteFront(L);
-	} else {
-		Node temp = L->cursor;
-		Node a = L->cursor->prev;
-		Node b = L->cursor->next;
-		a->next = b;
-		b->prev= a;
-		freeNode(&temp);
-		L->length--;
-		moveFront(L);
-	}
+    if(L == NULL) {
+        printf("List Error: calling delete() on NULL List reference\n");
+        exit(1);
+    }
+    if(L->cursor == NULL) {
+        printf("List Error: calling delete() on a List with no cursor\n");
+        exit(1);
+    }
+    Node M = L->cursor->next;
+    Node J = L->cursor->prev;
+    freeNode(&(L->cursor));
+    if(M != NULL) M->prev = J;
+    if(J != NULL) J->next = M;
+    L->length--;
+    if(L->cursor == NULL) L->index = -1;
 }
+
 
 // Other Functions ------------------------------------------------------------
 
