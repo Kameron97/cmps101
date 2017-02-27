@@ -154,25 +154,23 @@ int get(List L){
 //equals()
 //returns true(1) if A is identical to B, false (0) otherwise
 //inspired off of Queue.c
-int equals(List A, List B){
-	int eq = 0;
-	Node N = NULL;
-	Node M = NULL;
-
-	if( A == NULL || B == NULL){
-		printf("List error: calling equals() on NULL List reference\n");
-		exit(1);
-	}
-
-	eq = (A->length == B->length);
-	N= A->front;
-	M = B->front;
-	while(eq && N != NULL){
-		eq = (N->data == M->data);
-		N = N->next;
-		M = M->next;
-	}
-	return eq;
+int equals(List A, List B) {
+   if(A == NULL || B == NULL) {
+      printf("List Error: calling equals() on NULL List reference\n");
+      exit(1);
+   }
+   if(A->length != B->length) {
+      return 0;
+   }
+   Node cfront = B->front;
+   Node tmp = A->front;
+   while(cfront->next != NULL && tmp->next != NULL) {
+      if(cfront->data != tmp->data)
+         return 0;
+      cfront = cfront->next;
+      tmp = tmp->next;
+   }
+   return 1;
 }
 
 //Manipultation procedure ==================
