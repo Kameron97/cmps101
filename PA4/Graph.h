@@ -5,9 +5,11 @@
 //Graph.h
 //Based off of List.h from PA2
 //used to 
-
+#include "List.h"
 #ifndef _GRAPH_H_INCLUDE_
 #define _LIST_H_INCLUDE_
+#define INF -1
+#define NIL 0
 
 typedef struct GraphObj* Graph;
 /*** Constructors-Destructors ***/
