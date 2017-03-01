@@ -50,4 +50,32 @@ Graph newGraph(int n){
 
 //free Graph
 //frees up any memory allocations for a Graph ADT
+void freeGraph(Graph *pG){
+	for (int i=0; i<=getOrder(*pG); i++){
+		freeList(&(*pG)->adjacent[i]);
+	}
+	free((*pG)->adjacent);
+	free((*pG)->parent);
+	free((*pG)->distance);
+	free((*pG)->color);
+
+	*pG->adjacent = NULL;
+	*pG->parent = NULL;
+	*pG->distance = NULL;
+	*pG->color = NULL;
+
+	free(*pG);
+	*pG = NULL;
+}
+
+//getOrder
+//returns order
+int getOrder(Graph G){
+	return G->order;
+}
+//getSize
+//return size
+int getSize(Graph G){
+	return G->size;
+}
 
