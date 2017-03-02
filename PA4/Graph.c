@@ -84,7 +84,7 @@ int getSize(Graph G){
 	if (G == NULL){
 		printf("getSize() Error: Called on Null Graph!");
 		exit(EXIT_FAILURE);
-		}
+	}
 	return G->size;
 }
 
@@ -104,9 +104,13 @@ int getSource(Graph G){
 int getParent(Graph G, int u){
 	if (G == NULL){
 		printf("getParent() Error: Called on Null Graph!");
+		exit(EXIT_FAILURE);
+
 	}
 	if( u < 1 || u > getOrder(G)){
 		printf("getParent() Error: Called on unknown value for u!");
+		exit(EXIT_FAILURE);
+
 	}
 	return G->parent[u];
 }
@@ -118,11 +122,20 @@ int getParent(Graph G, int u){
 int getDist(Graph G, int u){
 	if (G == NULL){
 		printf("getDist() Error: Called no Null Graph!");
+		exit(EXIT_FAILURE);
+
 	}
 	if ( u < 1 || u > getOrder(G)){
 		printf("getDist() Error: Called on invalid u!");
+		exit(EXIT_FAILURE);
+
 	}
-	return G->distance[u];
+	if(getSource(G) == NIL) {
+		return INF;
+	}
+	else{
+		return G->distance[u];
+	}
 }
 
 //getPath()
@@ -132,16 +145,23 @@ int getDist(Graph G, int u){
 void getPath(List L, Graph G, int u){
 	if ( getSource(G) == NIL){
 		printf("getPath() Error: Source is Nil!");
+		exit(EXIT_FAILURE);
+
 	}
 	if ( u < 1 || u > getOrder(G)){
 		printf("getPath() Error: Invalid u!");
+		exit(EXIT_FAILURE);
+
 	}
 	if( u == G->source){
-		append(L,u);
+		prepend(L,u);
 	}
-	else if (G->parent[u] != NIL){
-		getPath(L, G, G->parent[u]);
-		append(L,u);
+	else if (G->parent[u] == NIL){
+		append(L, NIL);
+	}
+	else{
+		prepend(L,u);
+		getPath(L,G,G->parent[u]);
 	}
 }
 
@@ -164,76 +184,86 @@ void makeNull(Graph G){
 //Inserts new edge joniing u to v
 //u is added to the adjacency list of V
 void addEdge(Graph G, int u, int v) {
-   if(u < 1 || u > getOrder(G) || v < 1 || v > getOrder(G)) {
-     printf("Graph Error: calling addEdge() with verticies out of bounds\n");
-     exit(1);
-   }
-   addArc(G, u, v);
-   addArc(G, v, u);
-   G->size--;
+	if(u < 1 || u > getOrder(G) || v < 1 || v > getOrder(G)) {
+		printf("Graph Error: calling addEdge() with verticies out of bounds\n");
+		exit(EXIT_FAILURE);
+	}
+	addArc(G, u, v);
+	addArc(G, v, u);
+	G->size--;
 }
 
 // Adds a directed edge to the Graph G from u to v
 // Pre: 1 <= u <= getOrder(G), 1 <= v <= getOrder(G)
 void addArc(Graph G, int u, int v) {
-   if(u < 1 || u > getOrder(G) || v < 1 || v > getOrder(G)) {
-     printf("Graph Error: calling addArc() with verticies out of bounds\n");
-     exit(1);
-   }
-   List S = G->adjacent[u];
-   moveFront(S);
-   while(index(S) > -1 && v > get(S)) {
-      moveNext(S);
-   }
-   if(index(S) == -1)
-      append(S, v);
-   else
-      insertBefore(S, v);
-   G->size++;
+	if(u < 1 || u > getOrder(G) || v < 1 || v > getOrder(G)) {
+		printf("Graph Error: calling addArc() with verticies out of bounds\n");
+		exit(EXIT_FAILURE);
+
+	}
+	moveFront(G->adjacent[u]);
+	while(index(G->adjacent[u]) > -1 && v > get(G->adjacent[u])) {
+		moveNext(G->adjacent[u]);
+	}
+	if(index(G->adjacent[u]) == -1)
+		append(G->adjacent[u], v);
+	else
+		insertBefore(G->adjacent[u], v);
+	G->size++;
 }
 
 // Performs Breadth-first search on the Graph G with the
 // given source vertex s.
+//based off of CLRS BFS psuedo code
 void BFS(Graph G, int s) {
-   for(int i = 0; i < (G->order + 1); ++i) {
-      G->parent[i] = NIL;
-      G->distance[i] = INF;
-      G->color[i] = WHITE;
-   }
-   G->source = s;
-   G->distance[s] = 0;
-   G->color[s] = GRAY;
-   List Q = newList();
-   prepend(Q, s);
-   while(length(Q) > 0) {
-      int ele = back(Q);
-      deleteBack(Q);
-      List adj = G->adjacent[ele];
-      moveFront(adj);
-      while(index(adj) > -1) {
-         int v = get(adj);
-         if(G->color[v] == WHITE) {
-            G->color[v] = GRAY;
-            G->parent[v] = ele;
-            G->distance[v] = G->distance[ele] + 1;
-            prepend(Q, v);
-         }
-         moveNext(adj);
-      }
-   }
-   freeList(&Q);
+	int u;
+	int v;
+	G->source = s;
+	for ( int i = 0; i<=getOrder(G); i++){
+		G->color[i] = WHITE;
+		G->distance[i] = INF;
+		G->parent[i] = NIL;
+	}
+	G->color[s] = GRAY;
+	G->distance[s] = 0;
+	G->parent[s] = NIL;
+
+	List Q = newList();
+	append(Q,s);
+
+	while(length(Q) != 0){
+		u = front(Q);
+		deleteFront(Q);
+		moveFront(G->adjacent[u]);
+
+		while(index(G->adjacent[u])!=-1){
+			v = get(G->adjacent[u]);
+
+			if(G->color[v] == WHITE){
+				G->color[v] = GRAY;
+				G->distance[v] = G->distance[u]+1;
+				G->parent[v] = u;
+				append(Q,v);
+			}
+			moveNext(G->adjacent[u]);
+		}
+		G->color[u] = BLACK;
+	}
+	freeList(&Q);
+	Q = NULL;
+
 }
 
 // Prints out the Graph by iterating over and printing out
 // each adjacency list with the row number preceeding it.
 void printGraph(FILE *out, Graph G) {
-   if(out == NULL || G == NULL) {
-      printf("Graph Error: called printGraph() on a null reference");
-      exit(1);
-   }
-   for(int i = 1; i <= getOrder(G); ++i) {
-      fprintf(out, "%d: ", i);
-      printList(out, G->adjacent[i]);
-      fprintf(out, "\n");
-   }
+	if(out == NULL || G == NULL) {
+		printf("Graph Error: called printGraph() on a null reference");
+		exit(EXIT_FAILURE);
+	}
+	for(int i = 1; i <= getOrder(G); ++i) {
+		fprintf(out, "%d: ", i);
+		printList(out, G->adjacent[i]);
+		fprintf(out, "\n");
+	}
 }
