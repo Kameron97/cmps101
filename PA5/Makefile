@@ -38,4 +38,4 @@ checkFind : FindComponents
 	$(MEMCHECK) FindComponents in3 junk3
 
 checkClient : GraphClient
-	$(MEMCHECK) GraphClient
+	$(MEMCHECK) ./GraphClient
