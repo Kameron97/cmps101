@@ -56,17 +56,18 @@ Graph newGraph(int n){
 //Free memory Function
 //freeGraph()
 
-void freeGraph(Graph *pG){
-	for(int i=1; i<=(*pG)->order; i++){
-		freeList(&((*pG)->adjacent[i]));
-	}
-	free((*pG)->adjacent);
-	free((*pG)->parent);
-	free((*pG)->discover);
-	free((*pG)->finish);
-	free((*pG)->color);
-	free(*pG);
-	*pG = NULL;
+void freeGraph(Graph *pG) {
+   Graph temp = *pG;
+   for(int i = 0; i < (temp->order + 1); ++i) {
+      freeList(&(temp->adjacent[i]));
+   }
+   free(temp->adjacent);
+   free(temp->parent);
+   free(temp->discover);
+   free(temp->finish);
+   free(temp->color);
+   free(*pG);
+   *pG = NULL;
 }
 
 
@@ -141,37 +142,40 @@ int getDiscover(Graph G, int u){
 
 
 //addedge and addarc are copies form pa4
-
+//addEdge()
+//Inserts new edge joniing u to v
+//u is added to the adjacency list of V
 void addEdge(Graph G, int u, int v) {
-   if(u < 1 || u > getOrder(G) || v < 1 || v > getOrder(G)) {
-     printf("Graph Error: calling addEdge() with verticies out of bounds\n");
-     exit(1);
-   }
-   addArc(G, u, v);
-   addArc(G, v, u);
-   G->size--;
+	if(u < 1 || u > getOrder(G) || v < 1 || v > getOrder(G)) {
+		printf("Graph Error: calling addEdge() with verticies out of bounds\n");
+		exit(EXIT_FAILURE);
+	}
+	addArc(G, u, v);
+	addArc(G, v, u);
+	G->size--;
 }
 
 // Adds a directed edge to the Graph G from u to v
 // Pre: 1 <= u <= getOrder(G), 1 <= v <= getOrder(G)
 void addArc(Graph G, int u, int v) {
-   if(u < 1 || u > getOrder(G) || v < 1 || v > getOrder(G)) {
-     printf("Graph Error: calling addArc() with verticies out of bounds\n");
-     exit(1);
-   }
-   List S = G->adjacent[u];
-   moveFront(S);
-   while(index(S) > -1 && v > get(S)) {
-      moveNext(S);
-   }
-   if(index(S) == -1)
-      append(S, v);
-   else
-      insertBefore(S, v);
-   G->size++;
+	if(u < 1 || u > getOrder(G) || v < 1 || v > getOrder(G)) {
+		printf("Graph Error: calling addArc() with verticies out of bounds\n");
+		exit(EXIT_FAILURE);
+
+	}
+	moveFront(G->adjacent[u]);
+	while(index(G->adjacent[u]) > -1 && v > get(G->adjacent[u])) {
+		moveNext(G->adjacent[u]);
+	}
+	if(index(G->adjacent[u]) == -1)
+		append(G->adjacent[u], v);
+	else
+		insertBefore(G->adjacent[u], v);
+	G->size++;
 }
 
-
+//visit()
+//based off of CLRS psuedocode
 void Visit(Graph G, List S, int u, int *time) {
    G->color[u] = GRAY;
    G->discover[u] = ++*time;
@@ -226,23 +230,23 @@ void DFS(Graph G, List S){
 //transpose()
 //gets G^T
 Graph transpose(Graph G){
-	if (G == NULL){
-		printf("Transpose() error: Calling on Null Graph!");
-		exit(EXIT_FAILURE);
-	}
+   if(G == NULL){
+      printf("Graph Error: calling transpose on a null graphReference\n");
+      exit(1);
+   }
+   int order = getOrder(G);
+   Graph T = newGraph(order);
 
-	Graph temp = newGraph(getOrder(G));	//temp = size of G
-	for (int i = 0; i <= getOrder(G); i++){
-		moveFront(G->adjacent[i]);
+   for(int i = 1; i <=order; i++){
+         moveFront(G->adjacent[i]);
+         while(index(G->adjacent[i]) != -1){
+            addArc(T, get(G->adjacent[i]), i);
+            moveNext(G->adjacent[i]);
+         }
+      }
+			return T;
 
-		while(index(G->adjacent[i]) != -1){
-			addArc(temp, get(G->adjacent[i]), i);
-			moveNext(G->adjacent[i]);
-		}
-	}
-	return temp;
 }
-
 
 void printGraph(FILE *out, Graph G) {
    if(out == NULL || G == NULL) {
@@ -256,7 +260,6 @@ void printGraph(FILE *out, Graph G) {
    }
 }
 
-// Returns a copy of a given Graph
 Graph copyGraph(Graph G) {
    Graph C = newGraph(getOrder(G));
    for(int i = 1; i <= getOrder(G); ++i) {
