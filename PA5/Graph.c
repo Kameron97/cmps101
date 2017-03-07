@@ -57,17 +57,17 @@ Graph newGraph(int n){
 //freeGraph()
 
 void freeGraph(Graph *pG) {
-   Graph temp = *pG;
-   for(int i = 0; i < (temp->order + 1); ++i) {
-      freeList(&(temp->adjacent[i]));
-   }
-   free(temp->adjacent);
-   free(temp->parent);
-   free(temp->discover);
-   free(temp->finish);
-   free(temp->color);
-   free(*pG);
-   *pG = NULL;
+	Graph temp = *pG;
+	for(int i = 0; i < (temp->order + 1); ++i) {
+		freeList(&(temp->adjacent[i]));
+	}
+	free(temp->adjacent);
+	free(temp->parent);
+	free(temp->discover);
+	free(temp->finish);
+	free(temp->color);
+	free(*pG);
+	*pG = NULL;
 }
 
 
@@ -174,34 +174,19 @@ void addArc(Graph G, int u, int v) {
 	G->size++;
 }
 
-//visit()
-//based off of CLRS psuedocode
-void Visit(Graph G, List S, int u, int *time) {
-   G->color[u] = GRAY;
-   G->discover[u] = ++*time;
-   moveFront(G->adjacent[u]);
-   while(index(G->adjacent[u]) >= 0) {
-      int v = get(G->adjacent[u]);
-      if(G->color[v] == WHITE) {
-         G->parent[v] = u;
-         Visit(G, S, v, time);
-      }
-      moveNext(G->adjacent[u]);
-   }
-   G->color[u] = BLACK;
-   G->finish[u] = ++*time;
-   prepend(S, u);
-}
+void Visit(Graph G, List S, int u, int *time);
 //DFS Based off of CLRS DFS
 
+
+//DFS()
+//orderGraph
 void DFS(Graph G, List S){
 
 	if (length(S) != getOrder(G)){
 		printf("DFS() Error: List S not same size as G!");
 		exit(EXIT_FAILURE);
 	}
-
-
+	//set parameters of Graph to default vals
 	for( int i = 0; i < getOrder(G); i++){
 		G->parent[i] = NIL;
 		G->color[i] = WHITE;
@@ -209,7 +194,7 @@ void DFS(Graph G, List S){
 		G->finish[i] = UNDEF;
 	}
 
-	int time = 0;
+	int time = 0;		//gets discover/finish time
 	moveFront(S);
 
 	while( index(S) >= 0){
@@ -219,55 +204,91 @@ void DFS(Graph G, List S){
 
 		moveNext(S);
 	}
-	for(int size = length(S)/2; size > 0 ; size--){
+
+	int size = length(S)/2;
+	while( size > 0) {
 		deleteBack(S);
+		size--;
 	}
 }
 
+//visit()
+//based off of CLRS psuedocode
+void Visit(Graph G, List S, int u, int *time) {
+	G->color[u] = GRAY;
+	G->discover[u] = ++(*time);
+
+	moveFront(G->adjacent[u]);
+	while(index(G->adjacent[u]) >= 0) {
+
+
+		if(G->color[get(G->adjacent[u])] == WHITE) {
+			G->parent[get(G->adjacent[u])] = u;
+			Visit(G, S, get(G->adjacent[u]), time);
+		}
+		moveNext(G->adjacent[u]);
+	}
+	G->color[u] = BLACK;
+	G->finish[u] = ++(*time);
+	prepend(S, u);
+}
 
 
 
 //transpose()
 //gets G^T
 Graph transpose(Graph G){
-   if(G == NULL){
-      printf("Graph Error: calling transpose on a null graphReference\n");
-      exit(1);
-   }
-   int order = getOrder(G);
-   Graph T = newGraph(order);
+	if(G == NULL){
+		printf("Graph Error: calling transpose on a null graphReference\n");
+		exit(1);
+	}
+	Graph temp = newGraph(getOrder(G));
 
-   for(int i = 1; i <=order; i++){
-         moveFront(G->adjacent[i]);
-         while(index(G->adjacent[i]) != -1){
-            addArc(T, get(G->adjacent[i]), i);
-            moveNext(G->adjacent[i]);
-         }
-      }
-			return T;
+	for(int i = 1; i <=getOrder(G); i++){
+		moveFront(G->adjacent[i]);
+		while(index(G->adjacent[i]) >= 0){
+			addArc(temp, get(G->adjacent[i]), i);
+			moveNext(G->adjacent[i]);
+		}
+	}
+	return temp;
 
+}
+
+//copyGraph()
+//copies grapg onto another Graph
+Graph copyGraph(Graph G) {
+
+	if( G == NULL) {
+		printf("copyGraph() Error: Called on NULL graph!");
+		exit(EXIT_FAILURE);
+	}
+
+	Graph temp = newGraph(getOrder(G));
+
+	int i = 1;
+	while(i <= getOrder(G)) {
+		moveFront(G->adjacent[i]);
+		while(index(G->adjacent[i]) >= 0) {
+			addArc(temp, i, get(G->adjacent[i]));
+			moveNext(G->adjacent[i]);
+
+		}
+		i++;
+	}
+	return temp;
 }
 
 void printGraph(FILE *out, Graph G) {
-   if(out == NULL || G == NULL) {
-      printf("Graph Error: called printGraph() on a null reference\n");
-      exit(1);
-   }
-   for(int i = 1; i <= getOrder(G); ++i) {
-      fprintf(out, "%d: ", i);
-      printList(out, G->adjacent[i]);
-      fprintf(out, "\n");
-   }
-}
-
-Graph copyGraph(Graph G) {
-   Graph C = newGraph(getOrder(G));
-   for(int i = 1; i <= getOrder(G); ++i) {
-      moveFront(G->adjacent[i]);
-      while(index(G->adjacent[i]) >= 0) {
-         addArc(C, i, get(G->adjacent[i]));
-         moveNext(G->adjacent[i]);
-      }
-   }
-   return C;
+	if(out == NULL || G == NULL) {
+		printf("printGraph() Error: Called on NULL graph!");
+		exit(EXIT_FAILURE);
+	}
+	int i = 1;
+	while( i <= getOrder(G)) {
+		fprintf(out, "%d: ", i);
+		printList(out, G->adjacent[i]);
+		fprintf(out, "\n");
+		i++;
+	}
 }
