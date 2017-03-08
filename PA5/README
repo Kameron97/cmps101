@@ -1,0 +1,22 @@
+Kameron gill
+1478633
+kgill2@ucsc.edu
+
+LIST OF FILES:
+
+Graph.h - Interface for Graph.c
+
+Graph.c - ADT for Graph. Some parts based off of PA4 Graph.c
+
+
+List.h - Interface for List.h
+List.c - List ADT. Copied form PA2
+
+
+GraphTest.c - Written by me. Tests functions in Graph.c
+
+Makefile  - Compiles GraphTest and FindComponents
+
+README - Descrption of files
+
+FindComponents.c - Takes an input of files and outputs graphout of DFS and transpose

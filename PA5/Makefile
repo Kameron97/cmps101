@@ -22,17 +22,35 @@ FindComponents : FindComponents.o $(BASE_OBJECTS)
 GraphClient : GraphClient.o $(BASE_OBJECTS)
 	$(LINK) GraphClient GraphClient.o $(BASE_OBJECTS)
 
+GraphTest  : GraphTest.o $(BASE_OBJECTS)
+	$(LINK) GraphTest GraphTest.o $(BASE_OBJECTS)
+
+DFS : DFS.o $(BASE_OBJECTS)
+	$(LINK) DFS DFS.o $(BASE_OBJECTS)
+
+Tranpose : Tranpose.o $(BASE_OBJECTS)
+	$(LINK) Tranpose Tranpose.o $(BASE_OBJECTS)
+
 FindComponents.o : FindComponents.c $(HEADERS)
 	$(COMPILE) FindComponents.c
 
 GraphClient.o : GraphClient.c $(HEADERS)
 	$(COMPILE) GraphClient.c
 
+GraphTest.o : GraphTest.c $(HEADERS)
+	$(COMPILE) GraphTest.c
+
+DFS.o : DFS.c $(HEADERS)
+	$(COMPILE) DFS.c
+
+Tranpose.o : Tranpose.c $(HEADERS)
+	$(COMPILE) Tranpose.c
+
 $(BASE_OBJECTS) : $(BASE_SOURCES) $(HEADERS)
 	$(COMPILE) $(BASE_SOURCES)
 
 clean :
-	$(REMOVE) FindComponents GraphClient FindComponents.o GraphClient.o $(BASE_OBJECTS)
+	$(REMOVE) FindComponents GraphClient GraphTest FindComponents.o GraphClient.o GraphTest.o $(BASE_OBJECTS)
 
 checkFind : FindComponents
 	$(MEMCHECK) ./FindComponents input1 output1

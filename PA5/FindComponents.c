@@ -10,6 +10,8 @@
 #include"List.h"
 #include"Graph.h"
 #define MAX_LEN 255
+
+
 int main(int argc, char* argv[]) {
 	int n = 0;
 	FILE *in, *out;
@@ -66,38 +68,43 @@ int main(int argc, char* argv[]) {
 	Graph transposed = transpose(graph);
 	DFS(transposed, list);
 
-	int sccCount = 0;
+	int scc1 = 0;
 	for(int i = 1; i <= getOrder(transposed); i++){
-		if(getParent(transposed, i) == NIL) sccCount++; // no parent = 1 tree
+		if(getParent(transposed, i) == NIL) scc1++;
 	}
-	fprintf(out, "G contains %d strongly connected components:\n", sccCount);
 
-	List *sccList = calloc(sccCount + 1, sizeof(List));
-	for(int i = 1; i <= sccCount; i++) {
+
+	fprintf(out, "G contains %d strongly connected components:\n", scc1);
+
+	List *sccList = calloc(scc1 + 1, sizeof(List));
+	for(int i = 1; i <= scc1; i++) {
 		sccList[i] = newList();
 	}
-	int sccCount2 = 1;
+	int scc2 = 1;
 	int listLength = length(list);
-	int last = front(list);
+	int temp1 = front(list);
 	for(int j = 1; j <= listLength - 1; j++) {
-		int v = back(list);
+		int tempInt = back(list);
 		deleteBack(list);
-		prepend(sccList[sccCount2], v);
-		if (getParent(transposed, v) == NIL){
-			sccCount2++;
+		prepend(sccList[scc2], tempInt);
+		if (getParent(transposed, tempInt) == NIL){
+			scc2++;
 		}
 	}
-	prepend(sccList[sccCount2], last);
-
-	for(sccCount2 = 1; sccCount2 <= sccCount; sccCount2++) {
-		fprintf(out, "Component %d: ", sccCount2);
-		printList(out, sccList[sccCount2]); fprintf(out, "\n");
+	prepend(sccList[scc2], temp1);
+int x = 1;
+	while( x <= scc1) {
+		fprintf(out, "Component %d: ", x);
+		printList(out, sccList[x]); fprintf(out, "\n");
+		x++;
 	}
 
+
+//deww
 	freeGraph(&graph);
 	freeGraph(&transposed);
-	for(sccCount2 = 0; sccCount2 <= sccCount; sccCount2++) {
-		freeList(&sccList[sccCount2]);
+	for(scc2 = 0; scc2 <= scc1; scc2++) {
+		freeList(&sccList[scc2]);
 	}
 	freeList(&list);
 	free(sccList);
